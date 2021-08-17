@@ -1,23 +1,107 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import React, { useState, useEffect } from "react";
+import { Route, Switch, Link } from "react-router-dom";
+import Display from "./pages/Display";
+import Form from "./pages/Form";
 
-function App() {
+function App(props) {
+  const url = "https://places-api-081621.herokuapp.com/places";
+
+  const [places, setPlaces] = useState([]);
+
+  const emptyPlace = {
+    img: "",
+    name: "",
+    description: "",
+  };
+
+  const [selectedPlace, setSelectedPlace] = useState(emptyPlace);
+
+  const getPlaces = async () => {
+    const response = await fetch(url);
+    const data = await response.json();
+    setPlaces(data);
+  };
+
+  useEffect(() => {
+    getPlaces();
+  }, []);
+
+  const createPlace = async (newPlace) => {
+    await fetch(url, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newPlace),
+    });
+    getPlaces();
+  };
+
+  const updatePlace = async (updatePlace) => {
+    await fetch(url + `/${updatePlace._id}`, {
+      method: "put",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatePlace),
+    });
+    getPlaces();
+  };
+
+  const deletePlace = async (deletePlace) => {
+    await fetch(url + `/${deletePlace._id}`, {
+      method: "delete",
+    });
+    getPlaces();
+  };
+
+  const selectPlace = (place) => {
+    setSelectedPlace(place);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>My Favorite Places</h1>
+      <Link to="/create">
+        <button>Add a Fav</button>
+      </Link>
+      <main>
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={(rp) => (
+              <Display {...rp} places={places} selectPlace={selectPlace} />
+            )}
+          ></Route>
+          <Route
+            exact
+            path="/create"
+            render={(rp) => (
+              <Form
+                {...rp}
+                label="Create"
+                place={emptyPlace}
+                submitFunc={createPlace}
+              />
+            )}
+          ></Route>
+          <Route
+            exact
+            path="edit"
+            render={(rp) => (
+              <Form
+                {...rp}
+                label="Update"
+                place={selectedPlace}
+                submitFunc={updatePlace}
+                deletePlace={deletePlace}
+              />
+            )}
+          ></Route>
+        </Switch>
+      </main>
     </div>
   );
 }
