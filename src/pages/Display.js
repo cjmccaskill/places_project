@@ -8,16 +8,19 @@ const Display = (props) => {
       {places.map((place) => (
         <article key={place._id}>
           <img src={place.img} alt={place.name} />
-          <h2>{place.name}</h2>
-          <p>{place.description}</p>
-          <button
-            onClick={() => {
-              props.selectPlace(place);
-              props.history.push("/edit");
-            }}
-          >
-            Edit
-          </button>
+          <div className="info">
+            <h2>{place.name}</h2>
+            <p>{place.description}</p>
+            <button
+            className="edit-btn"
+              onClick={() => {
+                props.selectPlace(place);
+                props.history.push("/edit");
+              }}
+            >
+              Edit
+            </button>
+          </div>
         </article>
       ))}
     </div>

@@ -62,10 +62,12 @@ function App(props) {
 
   return (
     <div className="App">
-      <h1>My Favorite Places</h1>
-      <Link to="/create">
-        <button>Add a Fav</button>
-      </Link>
+      <div className="header">
+        <h1 className="main-title">My Favorite Places</h1>
+        <Link to="/create">
+          <button className="fav-btn">Add a Fav</button>
+        </Link>
+      </div>
       <main>
         <Switch>
           <Route
@@ -89,7 +91,7 @@ function App(props) {
           ></Route>
           <Route
             exact
-            path="edit"
+            path="/edit"
             render={(rp) => (
               <Form
                 {...rp}
